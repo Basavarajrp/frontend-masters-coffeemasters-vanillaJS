@@ -1,15 +1,15 @@
-window.addEventListener('DOMContentLoaded', () => {
-    console.log('Coffee Masters is loaded');
+import API from "./services/API.js";
+import Store from "./services/Store.js";
 
-    // querySelector is used to get the first element that matches the selector
-    let mainElement = document.querySelector('main');
+// The store should be accessible to all the files in the app not to single module
+window.app = {}; // create single object to store all the app data
+app.store = Store;
 
+window.addEventListener('DOMContentLoaded', async () => {
+    // get the menu from the API
+    const menu = await API.fetchMenu();
+    app.store.menu = menu;
 
-    // we can use the innerHTML property to set the content of element
-    mainElement.innerHTML = `
-        <h1>
-            Hello World, let's make some coffee
-        </h1>
-    `;
-
+    console.log("Store: ",app.store.menu);
 });
+
