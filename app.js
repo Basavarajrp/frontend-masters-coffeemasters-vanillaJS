@@ -1,6 +1,8 @@
 import API from "./services/API.js";
 import Store from "./services/Store.js";
 import { loadMenuData } from "./services/Menu.js";
+import { Router } from "./services/Router.js";
+
 
 // The store should be accessible to all the files in the app not to single module
 window.app = {}; // create single object to store all the app data
@@ -15,5 +17,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     */
     await loadMenuData();
     console.log("Store: ", app.store.menu);
+
+    // Initialize the router
+    Router.init();
 });
 
