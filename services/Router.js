@@ -21,15 +21,15 @@ export const Router = {
             });
         });
         
-        // Handle direct url visits (deep links)
-        // The popstate event is fired when the user navigates through browser history
-        // e.g. when clicking browser back/forward buttons or using history.back()/forward()
+        // Handle browser history navigation (back/forward buttons)
         window.addEventListener("popstate", () => {
-            const path = window.location.pathname || "/"; 
-            Router.go(path, false); // Don't add to history since this is a history navigation
+            // Don't call preventDefault() here
+            // Just handle the navigation based on current pathname
+            // Do not add to history, since this is a history navigation not the router navigation
+            Router.go(window.location.pathname, false);
         });
 
-        // Handle the initial url
+        // Handle initial page load
         Router.go(window.location.pathname);
     },
 
@@ -37,7 +37,11 @@ export const Router = {
         const route = Router.routes.find((route) => route.path === path);
         let pageElement = null;
         if (route) {
-            history.pushState(null, "", path);
+            if (addToHistory) {
+                // Only push to history if it's a new navigation
+                history.pushState({ path }, '', path);
+            }
+
             switch (route.view) {
                 case "Home":
                     pageElement = document.createElement("h1");
@@ -46,7 +50,7 @@ export const Router = {
                     break;
                 case "Order":
                     pageElement = document.createElement("h1");
-                    pageElement.innerHTML = "About";
+                    pageElement.innerHTML = "Order";
                     console.log("Order Page Element:==== ", pageElement);
                     break;
                 case "Product":
@@ -66,17 +70,11 @@ export const Router = {
         console.log("Page Element:==== ", pageElement);
         if (pageElement) {
              // reset the position of the page element
-             window.scrollX = 0;
-             window.scrollY = 0;
+             window.scrollTo(0, 0);
 
             // Remove all existing elements from the body and add the new page element
             document.querySelector("main").innerHTML = "";
             document.querySelector("main").appendChild(pageElement);
-        }
-
-        // Add the route to the history
-        if (addToHistory) {
-            history.pushState(null, "", path);
         }
     },
     
